@@ -24,3 +24,5 @@ Developer: @Naruto_464
 """
 
     await message.reply_text(text)
+
+print("START HIT")
