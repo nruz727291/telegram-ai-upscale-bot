@@ -1,16 +1,41 @@
 import asyncio
 import logging
 
+from aiohttp import web
+
+from bot.client import app
+
+import bot.handlers.start
+import bot.handlers.upscale
+
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 )
 
-from bot.client import app
 
-import bot.handlers.start
-import bot.handlers.upscale
+async def health_check(request):
+    return web.Response(text="Bot Running")
+
+
+async def start_webserver():
+
+    app_web = web.Application()
+
+    app_web.router.add_get("/", health_check)
+
+    runner = web.AppRunner(app_web)
+
+    await runner.setup()
+
+    site = web.TCPSite(
+        runner,
+        "0.0.0.0",
+        10000
+    )
+
+    await site.start()
 
 
 async def main():
@@ -20,6 +45,8 @@ async def main():
     me = await app.get_me()
 
     print(f"✅ Bot Started -> @{me.username}")
+
+    await start_webserver()
 
     await asyncio.Event().wait()
 
