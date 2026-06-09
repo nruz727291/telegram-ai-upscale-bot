@@ -1,8 +1,6 @@
-import uvloop
 import asyncio
 import logging
 
-uvloop.install()
 
 logging.basicConfig(
     level=logging.INFO,
